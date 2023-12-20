@@ -2,7 +2,7 @@ import  express  from "express";
 import mongoose from "mongoose";
 import { Server } from "socket.io";
 import productsRouter from "./routes/products.router.js";
-import ProductsModel from "./DAO/models/products.model.js";
+import ProductsModel from "./DAO/mongo/models/products.model.js";
 import cartRouter from "./routes/carts.router.js"
 import userRouter from "./routes/user.router.js"
 import initializePassport from "./config/passport.config.js";

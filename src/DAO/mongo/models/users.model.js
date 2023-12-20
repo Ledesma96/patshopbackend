@@ -18,11 +18,15 @@ const usersSchema = new mongoose.Schema({
         city:String,
         location: String
     }],
-    shopping:[{
-        cid:{
-            type: mongoose.Schema.Types.ObjectId, ref:"carts"
-        }
-    }]
+    shopping: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "carts"
+    },
+    rol:{
+        type:String,
+        enum:["user", "admin"],
+        default:"user"
+    }
 });
 
 const UsersModel = mongoose.model(usersCollection, usersSchema);

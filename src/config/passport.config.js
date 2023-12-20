@@ -1,7 +1,8 @@
 import passport from "passport";
 import local from "passport-local"
-import usersModel from "../DAO/models/users.model.js";
+import usersModel from "../DAO/mongo/models/users.model.js";
 import { createHash, isValidPassword } from "../uitils.js";
+import CartsModel from "../DAO/mongo/models/carts.model.js";
 
 const LocalStrategy = local.Strategy
 
@@ -44,7 +45,7 @@ const initializePassport = () => {
         { usernameField: "email" },
         async(username, password, done) => {
             try {
-                const user = await usersModel.findOne({email: username}).lean().exec()
+                const user = await usersModel.findOne({email: username})
                 if(!user){
                     console.error("El usuario no existe")
                     return done(null, false)
@@ -53,7 +54,13 @@ const initializePassport = () => {
                     console.error("Password invalido");
                     return done(null, false)
                 }
-        
+                if(user.rol != 'admin'){
+                    const newCart = new CartsModel
+                    const id = newCart._id
+                    user.shopping = id
+                    await user.save()
+                    await newCart.save()
+                }
                 return done(null, user)
                 
             } catch (error) {
