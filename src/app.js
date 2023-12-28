@@ -86,14 +86,14 @@ mongoose.connect(url, {
         io.on("text", async data => {
             const searchItem = data.trim(); 
             if (searchItem === "") {
-              io.emit("search", []); 
+              socket.emit("search", []); 
             } else {
               const regex = new RegExp(`^${searchItem}`, "i");
             
               try {
                 const searchProduct = await ProductsModel.find({ name: regex }).lean().exec();
                 console.log(searchProduct);
-                io.emit("search", searchProduct);
+                socket.emit("search", searchProduct);
               } catch (error) {
                 console.error("Error al buscar productos:", error);
               }
@@ -117,9 +117,9 @@ mongoose.connect(url, {
               const prodcut = await ProductsModel.find({name: regex})
               if(data == ""){
                 const products = await ProductsModel.find()
-                io.emit('product', products)
+                socket.emit('product', products)
               }
-              io.emit('product', prodcut)
+              socket.emit('product', prodcut)
             } catch (error) {
               console.log(error.message);
             }
