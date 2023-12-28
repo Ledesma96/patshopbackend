@@ -74,57 +74,57 @@ mongoose.connect(url, {
     })
 
     const io = new Server(httpServer, {
-        cors: {
-          origin: '*',
-          methods: ['GET', 'POST', 'PUT', 'DELETE'],
-          allowedHeaders: ['Content-Type', 'Authorization'],
-        },
-      });
+      cors: {
+        origin: '*',
+        methods: ['GET', 'POST', 'PUT', 'DELETE'],
+        allowedHeaders: ['Content-Type', 'Authorization'],
+      },
+    });
 
-    io.on("connection", async socket => {
-        console.log("Cliente conectado");
-        io.on("text", async data => {
-            const searchItem = data.trim(); 
-            if (searchItem === "") {
-              socket.emit("search", []); 
-            } else {
-              const regex = new RegExp(`^${searchItem}`, "i");
-            
-              try {
-                const searchProduct = await ProductsModel.find({ name: regex }).lean().exec();
-                console.log(searchProduct);
-                socket.emit("search", searchProduct);
-              } catch (error) {
-                console.error("Error al buscar productos:", error);
-              }
-            }
-          });
-
-          io.on('recivedProduct', async data => {
-            console.log(data);
-            const newProduct = new ProductsModel(data)
-            await newProduct.save()
-            const products = await ProductsModel.find()
-
-            io.emit('addProducts', products)
-          })
-
-          io.on('word',async data => {
-            const searchItem = data.trim();
-            const regex = new RegExp(`^${searchItem}`, "i")
-
+  io.on("connection", async socket => {
+      console.log("Cliente conectado");
+      socket.on("text", async data => {
+          const searchItem = data.trim(); 
+          if (searchItem === "") {
+            io.emit("search", []); 
+          } else {
+            const regex = new RegExp(`^${searchItem}`, "i");
+          
             try {
-              const prodcut = await ProductsModel.find({name: regex})
-              if(data == ""){
-                const products = await ProductsModel.find()
-                socket.emit('product', products)
-              }
-              socket.emit('product', prodcut)
+              const searchProduct = await ProductsModel.find({ name: regex }).lean().exec();
+              console.log(searchProduct);
+              io.emit("search", searchProduct);
             } catch (error) {
-              console.log(error.message);
+              console.error("Error al buscar productos:", error);
             }
-          })
-    })
+          }
+        });
+
+        socket.on('recivedProduct', async data => {
+          console.log(data);
+          const newProduct = new ProductsModel(data)
+          await newProduct.save()
+          const products = await ProductsModel.find()
+
+          socket.emit('addProducts', products)
+        })
+
+        socket.on('word',async data => {
+          const searchItem = data.trim();
+          const regex = new RegExp(`^${searchItem}`, "i")
+
+          try {
+            const prodcut = await ProductsModel.find({name: regex})
+            if(data == ""){
+              const products = await ProductsModel.find()
+              socket.emit('product', products)
+            }
+            io.emit('product', prodcut)
+          } catch (error) {
+            console.log(error.message);
+          }
+        })
+  })
 })
 .catch (e => {
     console.log("can´t connect to DB");
