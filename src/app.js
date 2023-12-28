@@ -83,7 +83,7 @@ mongoose.connect(url, {
 
     io.on("connection", async socket => {
         console.log("Cliente conectado");
-        socket.on("text", async data => {
+        io.on("text", async data => {
             const searchItem = data.trim(); 
             if (searchItem === "") {
               io.emit("search", []); 
@@ -100,16 +100,16 @@ mongoose.connect(url, {
             }
           });
 
-          socket.on('recivedProduct', async data => {
+          io.on('recivedProduct', async data => {
             console.log(data);
             const newProduct = new ProductsModel(data)
             await newProduct.save()
             const products = await ProductsModel.find()
 
-            socket.emit('addProducts', products)
+            io.emit('addProducts', products)
           })
 
-          socket.on('word',async data => {
+          io.on('word',async data => {
             const searchItem = data.trim();
             const regex = new RegExp(`^${searchItem}`, "i")
 
@@ -117,7 +117,7 @@ mongoose.connect(url, {
               const prodcut = await ProductsModel.find({name: regex})
               if(data == ""){
                 const products = await ProductsModel.find()
-                socket.emit('product', products)
+                io.emit('product', products)
               }
               io.emit('product', prodcut)
             } catch (error) {
