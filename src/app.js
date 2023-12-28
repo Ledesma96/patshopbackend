@@ -12,10 +12,11 @@ import initializePassport from "./config/passport.config.js";
 import passport from "passport";
 import MongoStore from "connect-mongo"
 import session from "express-session";
+import 'dotenv/config';
 
 
 
-const url = "mongodb+srv://gabrielmledesma96:Lolalaloca1@cluster0.a4qufb6.mongodb.net/?retryWrites=true&w=majority"
+const url = process.env.URL_MONGO
 const PORT = process.env.PORT || 8080
 
 const app = express();
