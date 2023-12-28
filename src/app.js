@@ -2,6 +2,9 @@ import  express  from "express";
 import mongoose from "mongoose";
 import { Server } from "socket.io";
 import productsRouter from "./routes/products.router.js";
+import messageRouter from "./routes/messages.router.js";
+import ordersRouter from "./routes/orders.router.js"
+import commentsRouter from "./routes/comment.router.js"
 import ProductsModel from "./DAO/mongo/models/products.model.js";
 import cartRouter from "./routes/carts.router.js"
 import userRouter from "./routes/user.router.js"
@@ -9,6 +12,7 @@ import initializePassport from "./config/passport.config.js";
 import passport from "passport";
 import MongoStore from "connect-mongo"
 import session from "express-session";
+
 
 
 const url = "mongodb+srv://gabrielmledesma96:Lolalaloca1@cluster0.a4qufb6.mongodb.net/?retryWrites=true&w=majority"
@@ -53,6 +57,9 @@ app.use(passport.session())
 app.use("/api/products", productsRouter)
 app.use("/api/carts", cartRouter)
 app.use("/api/session", userRouter)
+app.use('/api/messages', messageRouter)
+app.use('/api/orders', ordersRouter)
+app.use('/api/comments', commentsRouter)
 
 
 mongoose.connect(url, {
@@ -91,6 +98,31 @@ mongoose.connect(url, {
               }
             }
           });
+
+          socket.on('recivedProduct', async data => {
+            console.log(data);
+            const newProduct = new ProductsModel(data)
+            await newProduct.save()
+            const products = await ProductsModel.find()
+
+            socket.emit('addProducts', products)
+          })
+
+          socket.on('word',async data => {
+            const searchItem = data.trim();
+            const regex = new RegExp(`^${searchItem}`, "i")
+
+            try {
+              const prodcut = await ProductsModel.find({name: regex})
+              if(data == ""){
+                const products = await ProductsModel.find()
+                socket.emit('product', products)
+              }
+              io.emit('product', prodcut)
+            } catch (error) {
+              console.log(error.message);
+            }
+          })
     })
 })
 .catch (e => {

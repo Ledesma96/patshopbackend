@@ -25,7 +25,7 @@ export default class ProductsMongo{
             
           
             const filterCategory = category ? { category } : {};
-            const filterType = tipo  == "null" || tipo == null ? {} : { tipo: req.query.tipo };
+            const filterType = tipo  == "null" || tipo == null ? {} : {tipo };
         
             const filters = {
                 ...filterCategory,

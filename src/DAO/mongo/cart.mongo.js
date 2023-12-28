@@ -34,6 +34,9 @@ export default class CartsMongo{
                     const existProduct = cart.products.find((item) => item.pid.toString() === pid);
                     if (existProduct) {
                         existProduct.quantity += quant;
+                        if(existProduct.quantity > product.stock) {
+                            existProduct.quantity = product.stock
+                        }
                     } else {
                         cart.products.push({ pid, quantity: quant });
                     }

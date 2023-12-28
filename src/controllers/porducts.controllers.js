@@ -13,7 +13,7 @@ export const getAllProductsPaginated = async(req, res) => {
         const products = await productsService.getAllProductsPaginated(limit, page, sort, category, tipo, maxPrice, minPrice)
         res.status(200).send({success: true, products: products})
     } catch (error) {
-        res.stauts({success: false, message: 'An unexpected error occurred', error: error.message})
+        res.status(500).send({success: false, message: 'An unexpected error occurred', error: error.message})
     }
 }
 
@@ -22,9 +22,9 @@ export const getProductById = async(req, res) => {
         const {id} = req.params;
         const product = await productsService.getProductById(id)
 
-        res.status(200).send({succes:true, message: 'Successfully obtained product', product: product})
+        res.status(200).send({success:true, message: 'Successfully obtained product', product: product})
     } catch (error) {
-        res.status(500).send({succes:false, message: 'An unexpected error occurred', error: error.message})
+        res.status(500).send({success:false, message: 'An unexpected error occurred', error: error.message})
     }
 }
 
@@ -34,7 +34,7 @@ export const addProoducts = async(req, res) => {
 
         const add = await productsService.addProoducts(data)
 
-        res.status(200).send({succes: true, message: add})
+        res.status(200).send({success: true, message: add})
     } catch (error) {
         res.status(500).send({success: false, message: error.message})
     }
