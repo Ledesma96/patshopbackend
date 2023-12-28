@@ -81,19 +81,19 @@ mongoose.connect(url, {
       },
     });
 
-  io.on("connection", async socket => {
+  socket.on("connection", async socket => {
       console.log("Cliente conectado");
       socket.on("text", async data => {
           const searchItem = data.trim(); 
           if (searchItem === "") {
-            io.emit("search", []); 
+            socket.emit("search", []); 
           } else {
             const regex = new RegExp(`^${searchItem}`, "i");
           
             try {
               const searchProduct = await ProductsModel.find({ name: regex }).lean().exec();
               console.log(searchProduct);
-              io.emit("search", searchProduct);
+              socket.emit("search", searchProduct);
             } catch (error) {
               console.error("Error al buscar productos:", error);
             }
