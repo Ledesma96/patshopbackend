@@ -44,3 +44,14 @@ export const updateCart = async (req, res) => {
         res.status(400).send({succes: false, message:'An unexpected error occurred', error: error.message})
     }
 }
+
+export const deleteAproduct = async (req, res) => {
+    try {
+        const {cid, pid} = req.params
+
+        const deleted = await cartsServices.deleteAproduct(cid, pid)
+        res.status(202).send({success: true, message: deleted})
+    } catch (error) {
+        res.status(400).send({success: false, message: error.message})
+    }
+}

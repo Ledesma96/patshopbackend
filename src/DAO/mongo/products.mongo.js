@@ -1,4 +1,4 @@
-import ProductsModel from "./models/products.model.js";
+import ProductsModel from "../models/products.model.js";
 
 export default class ProductsMongo{
     constructor () {

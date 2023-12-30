@@ -1,6 +1,6 @@
-import CartsModel from "./models/carts.model.js"
-import OrdersModel from "./models/orders.model.js"
-import ProductsModel from "./models/products.model.js"
+import CartsModel from "../models/carts.model.js"
+import OrdersModel from "../models/orders.model.js"
+import ProductsModel from "../models/products.model.js"
 
 export default class OrdersMongo{
     contructor(){

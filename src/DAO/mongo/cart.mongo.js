@@ -1,5 +1,5 @@
-import CartsModel from "./models/carts.model.js"
-import ProductsModel from "./models/products.model.js";
+import CartsModel from "../models/carts.model.js"
+import ProductsModel from "../models/products.model.js";
 
 export default class CartsMongo{
     constructor(){
@@ -73,6 +73,17 @@ export default class CartsMongo{
             } else {
                 return 'This cart is not available, please log in to get a cart'
             }
+        } catch (error) {
+            throw error
+        }
+    }
+
+    deleteAproduct = async(cid, pid) => {
+        try {
+            const cart = await CartsModel.findById(cid)
+            cart.products = cart.products.filter(item => item._id != pid)
+            await cart.save()
+            return 'Product a deleted to cart'
         } catch (error) {
             throw error
         }

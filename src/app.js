@@ -1,13 +1,16 @@
 import  express  from "express";
 import mongoose from "mongoose";
 import { Server } from "socket.io";
+
 import productsRouter from "./routes/products.router.js";
 import messageRouter from "./routes/messages.router.js";
 import ordersRouter from "./routes/orders.router.js"
 import commentsRouter from "./routes/comment.router.js"
-import ProductsModel from "./DAO/mongo/models/products.model.js";
+import ProductsModel from "./DAO/models/products.model.js";
 import cartRouter from "./routes/carts.router.js"
 import userRouter from "./routes/user.router.js"
+import stripeRouter from "./routes/stripe.router.js"
+
 import initializePassport from "./config/passport.config.js";
 import passport from "passport";
 import MongoStore from "connect-mongo"
@@ -61,6 +64,7 @@ app.use("/api/session", userRouter)
 app.use('/api/messages', messageRouter)
 app.use('/api/orders', ordersRouter)
 app.use('/api/comments', commentsRouter)
+app.use('/api/stripe', stripeRouter)
 
 
 mongoose.connect(url, {
@@ -81,7 +85,7 @@ mongoose.connect(url, {
       },
     });
 
-  socket.on("connection", async socket => {
+  io.on("connection", async socket => {
       console.log("Cliente conectado");
       socket.on("text", async data => {
           const searchItem = data.trim(); 

@@ -1,4 +1,4 @@
-import CommentsModel from "./models/comments.model.js";
+import CommentsModel from "../models/comments.model.js";
 
 export default class CommentsMongo{
     constructor(){

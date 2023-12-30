@@ -1,8 +1,8 @@
 import passport from "passport";
 import local from "passport-local"
-import usersModel from "../DAO/mongo/models/users.model.js";
+import usersModel from "../DAO/models/users.model.js";
 import { createHash, isValidPassword } from "../uitils.js";
-import CartsModel from "../DAO/mongo/models/carts.model.js";
+import CartsModel from "../DAO/models/carts.model.js";
 
 const LocalStrategy = local.Strategy
 
@@ -14,7 +14,7 @@ const initializePassport = () => {
             usernameField: "email"
         }, 
         async(req, username, password, done) => {
-        const {first_name, email, last_name, age} = req.body
+        const {first_name, email, last_name, dni} = req.body
 
     try {
         const existUser = await usersModel.findOne({email: username})
@@ -24,9 +24,10 @@ const initializePassport = () => {
             const newUser ={
                 first_name,
                 last_name,
-                age,
                 email,
-                password: createHash(password)
+                dni,
+                password: createHash(password),
+                image: 'https://cdn.pixabay.com/photo/2015/10/05/22/37/blank-profile-picture-973460_960_720.png'
             }
             const userCreated = new usersModel(newUser);
             await userCreated.save()
@@ -55,11 +56,13 @@ const initializePassport = () => {
                     return done(null, false)
                 }
                 if(user.rol != 'admin'){
-                    const newCart = new CartsModel
-                    const id = newCart._id
-                    user.shopping = id
-                    await user.save()
-                    await newCart.save()
+                    if(!user.shopping){
+                        const newCart = new CartsModel
+                        const id = newCart._id
+                        user.shopping = id
+                        await user.save()
+                        await newCart.save()
+                    }
                 }
                 return done(null, user)
                 
