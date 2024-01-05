@@ -96,7 +96,6 @@ mongoose.connect(url, {
           
             try {
               const searchProduct = await ProductsModel.find({ name: regex }).lean().exec();
-              console.log(searchProduct);
               socket.emit("search", searchProduct);
             } catch (error) {
               console.error("Error al buscar productos:", error);
@@ -105,7 +104,6 @@ mongoose.connect(url, {
         });
 
         socket.on('recivedProduct', async data => {
-          console.log(data);
           const newProduct = new ProductsModel(data)
           await newProduct.save()
           const products = await ProductsModel.find()

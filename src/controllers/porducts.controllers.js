@@ -4,7 +4,7 @@ export const getAllProductsPaginated = async(req, res) => {
     try {
         const limit = parseInt(req.query?.limit || 6);
         const page = parseInt(req.query?.page || 1);
-        const sort = parseInt(req.query?.sort || 1)
+        const sort = parseInt(req.query?.sort)
         const category = req.query?.category || null;
         const tipo = req.query?.tipo || null
         const maxPrice = parseInt(req.query?.max || 100000000)

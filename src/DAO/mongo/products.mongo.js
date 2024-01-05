@@ -38,7 +38,7 @@ export default class ProductsMongo{
               const products = await ProductsModel.paginate(filters, {
                 page,
                 limit,
-                sort:{price: sort},
+                sort: {price: sort, stock: -1},
                 lean: true,
               })
               products.nextLink = products.hasNextPage ? `/?page=${products.nextPage}&limit=${limit}&sort=${sort}` : "";
