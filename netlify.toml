@@ -1,0 +1,6 @@
+[build]
+  command = "npm run start"  
+  publish = "src/app.js" 
+
+[build.environment]
+  NODE_VERSION = "18.16.0"  
